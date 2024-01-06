@@ -52,4 +52,20 @@ class User extends Authenticatable
     {
         return $this->hasOne(LeadDev::class);
     }
+    public function leadDevProjects()
+    {
+        return $this->hasManyThrough(
+            Project::class,
+            LeadDev::class,
+            'user_id', // Foreign key on leadDevs table
+            'leadDev_id', // Foreign key on projects table
+            'id', // Local key on users table
+            'id' // Local key on leadDevs table
+        );
+    }
+
+    public function DeveloperProjects()
+    {
+        return $this->belongsToMany(Project::class, 'developer_project', 'developer_id', 'project_id');
+    }
 }
