@@ -51,7 +51,9 @@ class DeveloperController extends Controller
             'contactNum' => 'required|Numeric',
             'manager_id' => 'required|exists:managers,id',
         ]);
-// Get the developer's ID from the users table based on the provided email
+        // Get the developer's ID from the users table based on the provided email
+        // find a user whose email matches the email provided in the request ($request->email).
+        // The ->first() method is used to retrieve the first matching record.
         $developerUser = User::where('email', $request->email)->first();
 
         if (!$developerUser) {
@@ -68,7 +70,8 @@ class DeveloperController extends Controller
         $developer->user_id = $developerUser->id; // Associate the user_id from the users table
         $developer->save();
 
-        return redirect()->route('developer.index')->withSuccess('New developer record added successfully.');
+        return redirect()->route('developer.index')
+            ->withSuccess('New developer record added successfully.');
     }
 
     /**
@@ -77,6 +80,8 @@ class DeveloperController extends Controller
     public function show(Developer $developer)
     {
         if (auth()->user()->can('view', Manager::class)) {
+            //loads the 'managers' relationship on the $developer model.
+            // There's a relationship named 'managers' defined on the Developer model.
             $developer = $developer->load('managers');
             return view('developer.show', compact('developer'));
         }

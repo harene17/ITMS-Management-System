@@ -24,6 +24,8 @@ class ProjectController extends Controller
      */
     public function create()
     {
+        //checks if the authenticated user has the ability to create
+        // project by calling the authorize method.
         $this->authorize('create', Project::class);
         $managers = Manager::all();
         $leadDev = LeadDev::all();
@@ -49,7 +51,10 @@ class ProjectController extends Controller
             'Deployment' =>'required|min:4|string|max:255',
             'manager_id' => 'required|exists:managers,id',
             'leadDev_id' => 'required|exists:lead_devs,id',
+            // checks that the 'developers' input is an array
             'developers' => 'array',
+            //checks that each element corresponds to an existing
+            // record in the 'developers' table.
             'developers.*' => 'exists:developers,id',
         ]);
 

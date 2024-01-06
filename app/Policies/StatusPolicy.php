@@ -37,6 +37,7 @@ class StatusPolicy
 
         if ($user->user_level == 1) {
             // Lead Developer can view statuses for projects they are assigned to
+            // user id in users table same as user_id in leadDev table
             return $project->leadDev->user_id == $user->id;
         }
 
@@ -48,11 +49,6 @@ class StatusPolicy
      */
     public function create(User $user, Project $project): bool
     {
-        if ($user->user_level == 2) {
-            // Developer can create status for projects they are assigned to
-            return $project->developers->contains($user->developer->id);
-        }
-
         if ($user->user_level == 1) {
             // Lead Developer can create status for projects they are assigned to
             return $project->leadDev->user_id == $user->id;

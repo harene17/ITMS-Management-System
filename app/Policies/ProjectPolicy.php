@@ -28,6 +28,8 @@ class ProjectPolicy
         }
 
         // Developer can view projects they are assigned to
+        //collection of developers associated with the project ($project->developers)
+        //contains the ID of the authenticated user's developer ($user->developer->id).
         if ($user->user_level == 2 && $project->developers->contains($user->developer->id)) {
             return true;
         }
@@ -35,11 +37,7 @@ class ProjectPolicy
         // Lead Developer can view projects they are assigned to
         if ($user->user_level == 1) {
             // Check if the authenticated user is the lead developer for this project
-            $leadDev = LeadDev::where('user_id', $user->id)->first();
-
-            if ($leadDev && $project->leadDev->id == $leadDev->id) {
-                return true;
-            }
+            return $project->leadDev->user_id == $user->id;
         }
 
         return false;
